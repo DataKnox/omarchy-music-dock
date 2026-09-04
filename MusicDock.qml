@@ -6,9 +6,10 @@ import qs.Ui
 // A tray-style icon for Spotify. Neither the Spotify web app (a Chromium app
 // window) nor the native client registers a StatusNotifierItem, so once
 // Spotify is hidden nothing in the bar represents it. This widget stands in
-// for that icon: it appears while a Spotify window exists, lights up while
-// music plays, shows the track as a tooltip, and a click shows or hides the
-// window in its drop-down workspace (see bin/omarchy-music-dock).
+// for that icon. Unlike a tray icon it stays put when Spotify is closed,
+// dimmed, so a click can open Spotify as well as show or hide it; it lights
+// up while music plays and shows the track as a tooltip. Show/hide/launch is
+// done by bin/omarchy-music-dock, which parks Spotify in a drop-down workspace.
 BarWidget {
   id: root
   moduleName: "dataknox.music-dock"
@@ -34,12 +35,12 @@ BarWidget {
     return null
   }
 
-  readonly property bool playing: player !== null && player.isPlaying
+  readonly property bool running: spotify !== null
+  readonly property bool playing: running && player !== null && player.isPlaying
   readonly property string track: player && (player.trackTitle || player.trackArtist)
     ? (player.trackTitle || "") + (player.trackArtist ? " — " + player.trackArtist : "")
     : ""
 
-  visible: spotify !== null
   implicitWidth: button.implicitWidth
   implicitHeight: button.implicitHeight
 
@@ -49,17 +50,20 @@ BarWidget {
     bar: root.bar
     text: ""
     active: root.playing
-    tooltipText: root.track !== "" ? root.track : "Spotify: click to show or hide"
+    opacity: root.running ? 1.0 : 0.45
+    tooltipText: !root.running ? "Spotify: click to open"
+               : (root.track !== "" ? root.track : "Spotify: click to show or hide")
     onPressed: function(b) {
       if (b === Qt.MiddleButton) {
-        if (root.mediaService) root.mediaService.runAction("playPause", false)
+        if (root.running && root.mediaService) root.mediaService.runAction("playPause", false)
       } else {
         root.bar.run("'" + root.script + "' toggle")
       }
     }
     onWheelMoved: function(delta) {
-      if (!root.mediaService) return
+      if (!root.running || !root.mediaService) return
       root.mediaService.runAction(delta > 0 ? "previous" : "next", false)
     }
+    Behavior on opacity { NumberAnimation { duration: 160 } }
   }
 }
