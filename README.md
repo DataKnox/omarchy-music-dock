@@ -25,7 +25,7 @@ omarchy plugin add https://github.com/DataKnox/omarchy-music-dock.git --enable
 Then add the Hyprland side. Copy the rules file into your config and load it:
 
 ```
-cp ~/.config/omarchy/plugins/dataknox.music-dock/hypr/music-dock.lua ~/.config/hypr/
+cp ~/.config/omarchy/plugins/io.github.dataknox.music-dock/hypr/music-dock.lua ~/.config/hypr/
 echo 'require("hypr.music-dock")' >> ~/.config/hypr/hyprland.lua
 hyprctl reload
 ```
@@ -37,12 +37,28 @@ a different key or inset.
 Optional: enable Omarchy's built-in now-playing widget next to the icon with
 `omarchy plugin enable omarchy.media --section right`.
 
+## Remove
+
+```
+omarchy plugin remove io.github.dataknox.music-dock
+```
+
+Then delete `~/.config/hypr/music-dock.lua` and the `require("hypr.music-dock")`
+line from `~/.config/hypr/hyprland.lua`, and run `hyprctl reload`. Omarchy's
+stock `Super + Shift + M` binding returns with the reload.
+
+## Dependencies
+
+Nothing beyond a stock Omarchy install: the widget uses Quickshell's Wayland
+and Omarchy's media service, and the script uses `hyprctl`, `jq`, and
+Omarchy's `omarchy-launch-webapp`. No sudo, no system files.
+
 ## Use
 
 - Click the icon, or press `Super + Shift + M`: show or hide Spotify. If it is
   not running, it launches straight into the drop-down.
 - Middle-click: play or pause. Scroll: previous or next track.
-- `~/.config/omarchy/plugins/dataknox.music-dock/bin/omarchy-music-dock show|hide|toggle`
+- `~/.config/omarchy/plugins/io.github.dataknox.music-dock/bin/omarchy-music-dock show|hide|toggle`
   does the same from a terminal or another script.
 
 ## How it works

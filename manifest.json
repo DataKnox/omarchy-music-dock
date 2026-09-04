@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "dataknox.music-dock",
+  "id": "io.github.dataknox.music-dock",
   "name": "Music Dock",
   "version": "0.1.0",
   "author": "DataKnox",

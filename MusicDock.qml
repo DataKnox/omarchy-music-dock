@@ -12,7 +12,7 @@ import qs.Ui
 // done by bin/omarchy-music-dock, which parks Spotify in a drop-down workspace.
 BarWidget {
   id: root
-  moduleName: "dataknox.music-dock"
+  moduleName: "io.github.dataknox.music-dock"
 
   // The helper script ships inside the plugin folder, so no PATH setup is
   // needed wherever the plugin was cloned to.

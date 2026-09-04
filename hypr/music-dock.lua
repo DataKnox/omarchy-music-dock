@@ -7,7 +7,7 @@
 --   require("hypr.music-dock")
 -- to ~/.config/hypr/hyprland.lua after the Omarchy defaults are loaded.
 
-local dock = (os.getenv("HOME") or "") .. "/.config/omarchy/plugins/dataknox.music-dock/bin/omarchy-music-dock"
+local dock = (os.getenv("HOME") or "") .. "/.config/omarchy/plugins/io.github.dataknox.music-dock/bin/omarchy-music-dock"
 
 -- Inset the drop-down so the dimmed desktop stays visible around it, and skip
 -- the focus border: like the scratchpad, it is only ever focused while open.
