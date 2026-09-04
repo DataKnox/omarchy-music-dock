@@ -18,6 +18,9 @@ BarWidget {
   // needed wherever the plugin was cloned to.
   readonly property string script: Qt.resolvedUrl("bin/omarchy-music-dock").toString().replace(/^file:\/\//, "")
 
+  // Nerd Font "md-spotify", the glyph Omarchy's own menu uses for Spotify.
+  readonly property string glyph: String.fromCodePoint(0xF04C7)
+
   readonly property var mediaService: bar?.shell?.firstPartyServiceFor("omarchy.media")
   readonly property var player: mediaService ? mediaService.activePlayer : null
   readonly property var toplevels: ToplevelManager.toplevels ? ToplevelManager.toplevels.values : []
@@ -30,7 +33,7 @@ BarWidget {
   readonly property var spotify: {
     for (var i = 0; i < toplevels.length; i++) {
       var t = toplevels[i]
-      if (t && isSpotify(t.appId)) return t
+      if (t && root.isSpotify(t.appId)) return t
     }
     return null
   }
@@ -48,9 +51,9 @@ BarWidget {
     id: button
     anchors.fill: parent
     bar: root.bar
-    text: ""
+    text: root.glyph
     active: root.playing
-    opacity: root.running ? 1.0 : 0.45
+    opacity: root.running ? 1.0 : 0.6
     tooltipText: !root.running ? "Spotify: click to open"
                : (root.track !== "" ? root.track : "Spotify: click to show or hide")
     onPressed: function(b) {
