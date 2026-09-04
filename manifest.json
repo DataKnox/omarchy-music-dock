@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "dataknox.music-dock",
+  "name": "Music Dock",
+  "version": "0.1.0",
+  "author": "DataKnox",
+  "license": "MIT",
+  "description": "A tray-style Spotify icon for the bar: click to show or hide the Spotify window, middle-click to play or pause, scroll to skip tracks.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "MusicDock.qml"
+  },
+  "barWidget": {
+    "displayName": "Music Dock",
+    "description": "Spotify icon that shows or hides the player like a tray app",
+    "category": "Media",
+    "defaultSection": "right",
+    "allowMultiple": false
+  }
+}

@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# omarchy:summary=Show or hide Spotify in its drop-down workspace, launching it when needed
+# omarchy:args=[toggle|show|hide]
+#
+# Hyprland has no minimize. The nearest thing is a special workspace: a
+# drop-down that overlays whatever you are working on and retracts on demand.
+# A window rule (hypr/music-dock.lua) parks Spotify in special:music, so
+# "hiding" Spotify is closing that drop-down while it keeps playing, and
+# "showing" it is opening the drop-down again. A Spotify window that was opened
+# before the rule existed is moved in on first use.
+#
+# Works with the native client (class "spotify") and the open.spotify.com web
+# app in Chromium app mode (class "chrome-open.spotify.com__-Default").
+
+set -euo pipefail
+
+CLASS_RE='^spotify$|open\.spotify\.com'
+URL=https://open.spotify.com
+WS=music
+
+addr=""
+ws=""
+
+find_spotify() {
+  local line
+  line=$(hyprctl clients -j | jq -r --arg re "$CLASS_RE" \
+    '[.[] | select(.class | test($re; "i"))][0] // empty | "\(.address) \(.workspace.name)"')
+  addr=${line%% *}
+  ws=${line#* }
+  [[ -n $line ]]
+}
+
+special_open() {
+  hyprctl monitors -j | jq -e --arg ws "special:$WS" 'any(.[]; .specialWorkspace.name == $ws)' >/dev/null
+}
+
+toggle_special() {
+  hyprctl dispatch "hl.dsp.workspace.toggle_special(\"$WS\")" >/dev/null
+}
+
+# Move a Spotify window that lives on a normal workspace into the drop-down.
+park() {
+  if ! hyprctl dispatch "hl.dsp.window.move({ window = \"address:$1\", workspace = \"special:$WS\", follow = false })" >/dev/null 2>&1; then
+    hyprctl dispatch "hl.dsp.focus({ window = \"address:$1\" })" >/dev/null
+    hyprctl dispatch "hl.dsp.window.move({ workspace = \"special:$WS\", follow = false })" >/dev/null
+  fi
+}
+
+launch() {
+  if command -v spotify >/dev/null 2>&1; then
+    setsid uwsm-app -- spotify >/dev/null 2>&1 &
+  else
+    omarchy-launch-webapp "$URL" >/dev/null 2>&1 &
+  fi
+}
+
+cmd=${1:-toggle}
+case $cmd in
+  toggle | show | hide) ;;
+  *) echo "usage: omarchy-music-dock [toggle|show|hide]" >&2; exit 2 ;;
+esac
+
+if ! find_spotify; then
+  [[ $cmd == hide ]] && exit 0
+  launch
+  for _ in $(seq 1 60); do
+    find_spotify && break
+    sleep 0.25
+  done
+  [[ -n $addr ]] || { echo "omarchy-music-dock: Spotify window did not appear" >&2; exit 1; }
+  sleep 0.3
+  special_open || toggle_special
+  exit 0
+fi
+
+[[ $ws == "special:$WS" ]] || park "$addr"
+
+case $cmd in
+  toggle) toggle_special ;;
+  show) special_open || toggle_special ;;
+  hide) ! special_open || toggle_special ;;
+esac
