@@ -40,6 +40,7 @@ BarWidget {
 
   readonly property bool running: spotify !== null
   readonly property bool playing: running && player !== null && player.isPlaying
+  readonly property string playingColor: String(setting("activeColor", "theme"))
   readonly property string track: player && (player.trackTitle || player.trackArtist)
     ? (player.trackTitle || "") + (player.trackArtist ? " — " + player.trackArtist : "")
     : ""
@@ -53,6 +54,9 @@ BarWidget {
     bar: root.bar
     text: root.glyph
     active: root.playing
+    useActiveColor: root.playingColor !== "monochrome"
+    activeColor: root.playingColor === "spotify" ? "#1DB954"
+               : (bar ? bar.urgent : foreground)
     opacity: root.running ? 1.0 : 0.6
     tooltipText: !root.running ? "Spotify: click to open"
                : (root.track !== "" ? root.track : "Spotify: click to show or hide")

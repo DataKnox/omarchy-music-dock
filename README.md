@@ -58,6 +58,8 @@ Omarchy's `omarchy-launch-webapp`. No sudo, no system files.
 - Click the icon, or press `Super + Shift + M`: show or hide Spotify. If it is
   not running, it launches straight into the drop-down.
 - Middle-click: play or pause. Scroll: previous or next track.
+- Set **Playing color** in the widget settings to use Spotify green, the
+  current Omarchy theme accent, or the normal monochrome bar color.
 - `~/.config/omarchy/plugins/io.github.dataknox.music-dock/bin/omarchy-music-dock show|hide|toggle`
   does the same from a terminal or another script.
 

@@ -15,6 +15,20 @@
     "description": "Spotify icon that shows or hides the player like a tray app",
     "category": "Media",
     "defaultSection": "right",
-    "allowMultiple": false
+    "allowMultiple": false,
+    "schema": [
+      {
+        "key": "activeColor",
+        "type": "enum",
+        "label": "Playing color",
+        "description": "Use Spotify green, the current Omarchy theme accent, or the normal bar foreground while music is playing.",
+        "options": [
+          "spotify",
+          "theme",
+          "monochrome"
+        ],
+        "defaultValue": "theme"
+      }
+    ]
   }
 }
